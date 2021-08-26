@@ -1,0 +1,9 @@
+.app-list {
+    margin-top: 50px;
+    transition: all 0.3s ease;
+}
+.app-list .list-group-item {
+    padding: 20px 35px 10px 35px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
