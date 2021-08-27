@@ -1,76 +1,78 @@
-import React, { Component } from 'react';
-import './PostListItem.css';
-
+import React, { Component } from "react";
+import "./PostListItem.css";
 
 export default class PostListItem extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            important: false,
-            like: false,
-        }
-        this.onImortant = this.onImortant.bind(this);
-        this.onLike = this.onLike.bind(this);
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       important: false,
+//       like: false,
+//     };
+//     this.onImortant = this.onImortant.bind(this);
+//     this.onLike = this.onLike.bind(this);
+//   }
+
+//   onImortant() {
+//     this.setState(({ important }) => ({ important: !important }));
+//   }
+//   onLike() {
+//     this.setState(({ like }) => ({ like: !like }));
+//   }
+
+//   onImortant = () => {
+//       this.setState(({important}) => ({important: !important}))
+
+//   }
+
+  render() {
+    const { label, onDelete, onToggleImportant, onToggleLiked, important, like } = this.props;
+
+    let classNames = "app-list-item d-flex justify-content-between";
+    if (important) {
+      classNames += " important";
     }
 
-    onImortant() {
-        this.setState(({important}) => ({important: !important}))
-
-    }
-    onLike() {
-        this.setState(({like}) => ({like: !like}))
-
+    if (like) {
+      classNames += " like";
     }
 
-    
-    // onImortant = () => {
-    //     this.setState(({important}) => ({important: !important}))
+    return (
+      <div className={classNames}>
+        <span className="app-list-item-label" onClick={onToggleLiked}>
+          {label}
+        </span>
+        <div className="d-flex justify-content-center align-items-center">
+          <button
+            type="button"
+            className="btn-star btn-sm"
+            onClick={onToggleImportant}
+          >
+            <i className="fa fa-star"></i>
+          </button>
 
-    // }
-
-
-
-
-    render() {
-        const {label, onDelete} = this.props;
-        const {important, like} = this.state;
-
-
-        let classNames = "app-list-item d-flex justify-content-between";
-        if(important){
-            classNames += " important";
-        }
-
-        if(like) {
-            classNames += ' like';
-        }
-
-
-
-        return (
-            <div className={classNames}>
-            <span className="app-list-item-label" onClick={this.onLike}>
-                {label}
-            </span>
-            <div className="d-flex justify-content-center align-items-center">
-                
-                <button 
-                type="button" 
-                className="btn-star btn-sm"
-                onClick={this.onImortant}>
-                <i className="fa fa-star"></i>
-                </button>
-
-                <button 
-                type="button" 
-                className="btn-trash btn-sm"
-                onClick={onDelete}>
-                <i className="fa fa-trash"></i>
-                </button>
-                <i className="fa fa-heart"></i>
-            </div>
-            </div>
-        )
-    }
+          <button type="button" className="btn-trash btn-sm" onClick={onDelete}>
+            <i className="fa fa-trash"></i>
+          </button>
+          <i className="fa fa-heart"></i>
+        </div>
+      </div>
+    );
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
