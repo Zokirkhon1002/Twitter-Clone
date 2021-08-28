@@ -25,21 +25,28 @@ export default class App extends Component {
           id: 3,
         },
       ],
+      inputValue: "",
+      likedLabels: "all",
     };
     this.deleteItem = this.deleteItem.bind(this);
     this.addItem = this.addItem.bind(this);
     this.onToggleImportant = this.onToggleImportant.bind(this);
     this.onToggleLiked = this.onToggleLiked.bind(this);
+    this.onUpdateSearch = this.onUpdateSearch.bind(this);
+    this.onFilterSelect = this.onFilterSelect.bind(this);
 
     this.maxId = 4;
   }
 
   deleteItem(id) {
-    let check = window.confirm("Are you sure to delete item?");
+    const index = this.state.data.findIndex((elem) => elem.id === id);
+    let label = this.state.data[index].label;
+    let check = window.confirm(`Are you sure to delete "${label}"`);
+
     if (check) {
       this.setState(({ data }) => {
-        const index = data.findIndex((elem) => elem.id === id);
-        const newArr = [...data.slice(0, index), ...data.slice(index + 1)];
+        const indeks = data.findIndex((elem) => elem.id === id);
+        const newArr = [...data.slice(0, indeks), ...data.slice(indeks + 1)];
 
         return {
           data: newArr,
@@ -68,7 +75,10 @@ export default class App extends Component {
     this.setState(({ data }) => {
       const index = data.findIndex((elem) => elem.id === id);
       const oldImportant = data[index];
-      const newImportant = { ...oldImportant, important: !oldImportant.important };
+      const newImportant = {
+        ...oldImportant,
+        important: !oldImportant.important,
+      };
       const newArr = [
         ...data.slice(0, index),
         newImportant,
@@ -96,19 +106,53 @@ export default class App extends Component {
     });
   }
 
+  searchPost(items, inputValue) {
+    if (inputValue.length === 0) {
+      return items;
+    }
+
+    return items.filter((item) => {
+      return item.label.toLowerCase().indexOf(inputValue) > -1;
+    });
+  }
+
+
+  labesLiked(items, liked){
+    if(liked === 'like'){
+      return items.filter(item => item.like)
+    } else {
+      return items;
+    }
+  }
+
+
+
+  onUpdateSearch(inputValue) {
+    this.setState({ inputValue });
+  }
+
+
+onFilterSelect(likedLabels){
+  this.setState({likedLabels});
+}
+
+
   render() {
-    const liked = this.state.data.filter(item => item.like).length;
-    const allPosts = this.state.data.length;
+    const { data, inputValue, likedLabels } = this.state;
+    const liked = data.filter((item) => item.like).length;
+    const allPosts = data.length;
+
+    const visiblePosts = this.labesLiked(this.searchPost(data, inputValue), likedLabels);
 
     return (
       <div className="app">
         <AppHeader liked={liked} allPosts={allPosts} />
         <div className="search-panel d-flex">
-          <SearchPanel />
-          <PostStatusFilter />
+          <SearchPanel onUpdateSearch={this.onUpdateSearch} />
+          <PostStatusFilter filter={likedLabels} onFilterSelect={this.onFilterSelect}/>
         </div>
         <PostList
-          posts={this.state.data}
+          posts={visiblePosts}
           onDelete={this.deleteItem}
           onToggleImportant={this.onToggleImportant}
           onToggleLiked={this.onToggleLiked}
